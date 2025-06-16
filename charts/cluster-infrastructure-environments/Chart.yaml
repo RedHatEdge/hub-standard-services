@@ -1,0 +1,8 @@
+---
+apiVersion: v2
+name: cluster-infra-envs
+description: >
+  A helm chart to define the necessary infra environments used for cluster deployments
+type: application
+version: 0.0.1
+appVersion: "1.0.0"
