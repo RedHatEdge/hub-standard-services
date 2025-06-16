@@ -1,0 +1,37 @@
+---
+apiVersion: agent-install.openshift.io/v1beta1
+kind: AgentServiceConfig
+metadata:
+  name: agent
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+{{- with .Values.AgentServiceConfig }}
+spec:
+{{- with .database }}
+  databaseStorage:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: {{ .storage }}
+    storageClassName: {{ .storageClass }}
+{{- end }}
+{{- with .filesystem }}
+  filesystemStorage:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: {{ .storage }}
+    storageClassName: {{ .storageClass }}
+{{- end }}
+{{- with .imageStorage }}
+  imageStorage:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: {{ .storage }}
+    storageClassName: {{ .storageClass }}
+{{- end }}
+{{- end }}

@@ -1,0 +1,8 @@
+---
+apiVersion: v2
+name: central-infrastructure-management
+description: >
+  A helm chart to setup ACM for assisted cluster installs
+type: application
+version: 0.0.1
+appVersion: "1.0.0"
