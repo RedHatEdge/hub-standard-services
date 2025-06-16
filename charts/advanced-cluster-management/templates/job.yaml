@@ -1,0 +1,24 @@
+{{- if .Values.advancedClusterManagement.enableRHEM }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: enable-flightctl-console-plugin
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  template:
+    spec:
+      serviceAccountName: console-patch-sa
+      restartPolicy: Never
+      containers:
+        - name: patch-console
+          image: registry.redhat.io/openshift4/ose-cli:latest
+          command:
+            - /bin/sh
+            - -c
+            - |
+              oc patch consoles.operator.openshift.io cluster --type='merge' -p '{"spec":{"plugins":["flightctl-plugin", "kubevirt-plugin", "acm"]}}'
+              # No idea why the virt plugin gets turned off
+{{- end }}

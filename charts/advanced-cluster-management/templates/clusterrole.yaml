@@ -1,0 +1,14 @@
+{{- if .Values.advancedClusterManagement.enableRHEM }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: patch-console
+rules:
+  - apiGroups: ["consoles.operator.openshift.io"]
+    resources: ["cluster"]
+    verbs: ["get", "patch"]
+  - apiGroups: ["operator.openshift.io"]
+    resources: ["consoles"]
+    verbs: ["get", "patch"]
+{{- end }}
