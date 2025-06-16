@@ -1,0 +1,6 @@
+apiVersion: v2
+name: assisted-cluster-install
+description: Provisions clusters via the assisted install process
+type: application
+version: 0.0.1
+appVersion: "1.0.0"

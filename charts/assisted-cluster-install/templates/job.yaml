@@ -1,0 +1,68 @@
+{{- if .Values.nodes -}}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: update-agents-{{ .Values.cluster.name }}
+  namespace: {{ .Values.cluster.env }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  backoffLimit: 4
+  template:
+    spec:
+      serviceAccount: update-agents-{{ .Values.cluster.name }}
+      serviceAccountName: update-agents-{{ .Values.cluster.name }}
+      restartPolicy: Never
+      containers:
+        - name: update-agents
+          image: registry.redhat.io/openshift4/ose-tools-rhel9:latest
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/bash"]
+          env:
+            - name: SERVICEACCOUNT
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.serviceAccountName
+          args:
+            - -xe
+            - /app/update-agents.sh
+          volumeMounts:
+            - name: update-agents
+              mountPath: /app
+      volumes:
+        - name: update-agents
+          configMap:
+            name: update-agents-{{ .Values.cluster.name }}
+            defaultMode: 493
+{{- end }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: update-manifests
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  backoffLimit: 4
+  template:
+    spec:
+      serviceAccount: update-manifests
+      serviceAccountName: update-manifests
+      restartPolicy: Never
+      containers:
+        - name: update-manifests
+          image: registry.redhat.io/openshift4/ose-tools-rhel9:latest
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/bash"]
+          args:
+            - -xe
+            - /app/update-manifests.sh
+          volumeMounts:
+            - name: update-manifests
+              mountPath: /app
+      volumes:
+        - name: update-manifests
+          configMap:
+            name: update-manifests
+            defaultMode: 493
